@@ -34,17 +34,16 @@ pipeline {
             parallel {
                 stage('Create parallel-file-2 immediately') { 
                     steps {
-                        echo "This works because we create it immediately."
-                        echo "Uncomment the sleep 5, one line down, and it'll fail."
-                        // sleep 5 
+                        echo "This purposely sets up a failure to demonstrate parallel stage execution."
+                        echo "The sleep 5 means our file will not exist in time for the next stage to find it."
+                        sleep 5 
                         sh "touch parallel-file-2"
                     }
                 }
-                stage('Look for parallel-file-2') {
+                stage('Look for parallel-file-1') {
                     steps {
-                        echo "This will work because the file was created first."
-                        echo "But if we remove the sleep 2, it might not."
-                        sleep 2
+                        echo "This will fail because it is running at the same time, but the sleep 5"
+                        echo "in the previous stage is preventing the file from being created in time."
                         sh "ls -alh --time-style=full-iso parallel-file-2"
                     }
                 }
